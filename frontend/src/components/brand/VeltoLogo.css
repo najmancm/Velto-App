@@ -1,0 +1,62 @@
+.velto-logo {
+  --velto-logo-color: #713248;
+  --velto-logo-detail: #b18c61;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  color: var(--velto-logo-color);
+  white-space: nowrap;
+}
+
+.velto-logo-mark {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  color: currentColor;
+}
+
+.velto-logo-wordmark {
+  color: currentColor;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  line-height: 1;
+}
+
+.velto-logo--light {
+  --velto-logo-color: #fff;
+  --velto-logo-detail: #e8c6a2;
+}
+
+.velto-logo--compact {
+  gap: 6px;
+}
+
+.velto-logo--compact .velto-logo-mark {
+  width: 27px;
+  height: 27px;
+  flex-basis: 27px;
+}
+
+.velto-logo--compact .velto-logo-wordmark {
+  font-size: 15px;
+  letter-spacing: 1.35px;
+}
+
+.velto-logo--mini {
+  gap: 5px;
+}
+
+.velto-logo--mini .velto-logo-mark {
+  width: 21px;
+  height: 21px;
+  flex-basis: 21px;
+}
+
+.velto-logo--mini .velto-logo-wordmark {
+  font-size: 12px;
+  letter-spacing: 0.8px;
+}

@@ -1,0 +1,257 @@
+.assistant-panel {
+  display: flex;
+  min-width: 0;
+  min-height: 570px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e5e7ef;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.assistant-header {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #eceef3;
+}
+
+.assistant-avatar,
+.assistant-message-mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 10px;
+  background: #87354f;
+  color: #fff;
+  font-weight: 800;
+}
+
+.assistant-avatar {
+  width: 34px;
+  height: 34px;
+  font-size: 15px;
+}
+
+.assistant-header h2 {
+  margin: 0 0 4px;
+  color: #263148;
+  font-size: 12px;
+}
+
+.assistant-header p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: #818a9b;
+  font-size: 9px;
+}
+
+.assistant-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #29a17b;
+}
+
+.assistant-disclaimer {
+  padding: 8px 13px;
+  border-bottom: 1px solid #f0f1f5;
+  background: #fbf5f7;
+  color: #757c8c;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.assistant-messages {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 16px 12px;
+  overscroll-behavior: contain;
+}
+
+.assistant-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.assistant-message-content {
+  min-width: 0;
+  max-width: 94%;
+}
+
+.assistant-message-content > p {
+  margin: 0;
+  padding: 10px 11px;
+  border-radius: 9px;
+  background: #f2f3f8;
+  color: #414b60;
+  font-size: 10px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.assistant-source {
+  display: block;
+  margin: 6px 3px 0;
+  color: #8b671e;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.4px;
+}
+
+.assistant-message-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  font-size: 10px;
+}
+
+.assistant-message.message-user {
+  justify-content: flex-end;
+}
+
+.assistant-message.message-user .assistant-message-content > p {
+  background: #87354f;
+  color: #fff;
+}
+
+.assistant-proposed-tasks {
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid #e8d2da;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.assistant-proposed-heading {
+  margin: 0 0 7px;
+  color: #4a5366;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.assistant-proposed-tasks ul {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 10px;
+  padding-left: 16px;
+  color: #616c80;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.assistant-proposed-tasks button {
+  min-height: 29px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  background: #87354f;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.assistant-proposed-tasks button:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.assistant-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 11px;
+}
+
+.assistant-suggestions button {
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid #e8d2da;
+  border-radius: 6px;
+  background: #fff;
+  color: #7b3048;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.assistant-suggestions button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.assistant-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 0 10px;
+  padding: 7px;
+  border: 1px solid #e0e3eb;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.assistant-composer:focus-within {
+  border-color: #a95c72;
+  box-shadow: 0 0 0 3px rgba(135, 53, 79, 0.08);
+}
+
+.assistant-composer textarea {
+  width: 100%;
+  min-height: 37px;
+  max-height: 100px;
+  resize: vertical;
+  padding: 5px 4px;
+  border: 0;
+  outline: 0;
+  color: #303b50;
+  font: inherit;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.assistant-composer textarea::placeholder {
+  color: #989faf;
+}
+
+.assistant-composer button {
+  display: grid;
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #87354f;
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.assistant-composer button:disabled {
+  background: #eeedfb;
+  color: #a97686;
+  cursor: not-allowed;
+}
+
+.assistant-footnote {
+  margin: 7px 12px 10px;
+  color: #9a9fad;
+  font-size: 8px;
+}
+
+@media (max-width: 980px) {
+  .assistant-panel {
+    min-height: 420px;
+  }
+}

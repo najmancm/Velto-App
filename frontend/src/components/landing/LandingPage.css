@@ -1,0 +1,776 @@
+.landing-page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.landing-page .navbar {
+  min-height: 76px;
+}
+
+.landing-page .logo {
+  text-decoration: none;
+}
+
+.landing-page .hero-section {
+  min-height: 550px;
+  padding-top: 70px;
+}
+
+.landing-page .hero-content h1 span {
+  color: #87354f;
+}
+
+.landing-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.task-check-empty {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+}
+
+.landing-sample-note {
+  margin: 14px 0 0;
+  color: #838da0;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.landing-page .how-section,
+.landing-page .features-section {
+  padding-top: 78px;
+  padding-bottom: 82px;
+}
+
+.landing-page .how-section > .eyebrow,
+.landing-page .features-section > .eyebrow {
+  margin-bottom: 13px;
+}
+
+.landing-page .how-section h2,
+.landing-page .features-section h2 {
+  margin-bottom: 34px;
+}
+
+.landing-page .feature-icon {
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.landing-footer {
+  display: flex;
+  min-height: 88px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 7%;
+  border-top: 1px solid #ececf4;
+  background: #fff;
+}
+
+.landing-footer .logo {
+  font-size: 18px;
+}
+
+.landing-footer p {
+  margin: 0;
+  color: #778196;
+  font-size: 11px;
+}
+
+.landing-footer .login-btn {
+  color: #7b3048;
+}
+
+.landing-planning-showcase {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.68fr) minmax(0, 1.32fr);
+  align-items: center;
+  gap: clamp(28px, 6vw, 84px);
+  width: min(100%, 1380px);
+  margin: 0 auto;
+  padding: 72px clamp(22px, 6.2vw, 86px);
+  background: #f7f0f1;
+}
+
+.landing-planning-copy {
+  max-width: 390px;
+}
+
+.landing-planning-copy .eyebrow {
+  margin-bottom: 15px;
+}
+
+.landing-planning-copy h2 {
+  margin: 0 0 14px;
+  color: #2b2326;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: clamp(30px, 3.8vw, 46px);
+  font-weight: 500;
+  line-height: 1.12;
+}
+
+.landing-planning-copy > p:last-child {
+  max-width: 330px;
+  margin: 0;
+  color: #756a6e;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.landing-app-preview {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e5d9dc;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 22px 54px rgba(70, 21, 38, 0.1);
+}
+
+.preview-window-bar {
+  display: flex;
+  height: 48px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 17px;
+  border-bottom: 1px solid #eee7e8;
+  background: #fff;
+}
+
+.preview-window-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #4c2936;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.8px;
+}
+
+.preview-window-label {
+  margin-left: auto;
+  color: #9a858c;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.preview-window-avatar {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f1e1e6;
+  color: #713248;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.preview-window-body {
+  display: grid;
+  min-height: 322px;
+  grid-template-columns: 150px minmax(0, 1fr);
+}
+
+.preview-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 19px 12px;
+  border-right: 1px solid #eee7e8;
+  background: #fcfaf9;
+}
+
+.preview-sidebar-heading {
+  margin: 2px 8px 6px;
+  color: #a08f94;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.preview-sidebar-item {
+  display: flex;
+  min-height: 29px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border-radius: 5px;
+  color: #665a5e;
+  font-size: 9px;
+}
+
+.preview-sidebar-item.is-current {
+  background: #f3e7ea;
+  color: #702a41;
+  font-weight: 700;
+}
+
+.preview-sidebar-item small {
+  margin-left: auto;
+  color: #87797e;
+  font-size: 8px;
+}
+
+.preview-sidebar-item i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 2px;
+  background: #a65b72;
+}
+
+.preview-project-heading {
+  margin-top: 21px;
+}
+
+.preview-plan-content {
+  min-width: 0;
+  padding: 23px clamp(14px, 3vw, 36px) 17px;
+}
+
+.preview-plan-topline {
+  margin-bottom: 9px;
+  color: #927f85;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.7px;
+}
+
+.preview-plan-topline span {
+  margin-left: 5px;
+  color: #b1a4a8;
+  font-weight: 550;
+}
+
+.preview-plan-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid #eee7e8;
+}
+
+.preview-plan-heading h3 {
+  margin: 0 0 3px;
+  color: #31272b;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.preview-plan-heading p {
+  margin: 0;
+  color: #8b7e82;
+  font-size: 9px;
+}
+
+.preview-plan-heading > span {
+  padding: 5px 7px;
+  border-radius: 4px;
+  background: #f8edf0;
+  color: #7b3048;
+  font-size: 8px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.preview-plan-task {
+  display: grid;
+  min-height: 56px;
+  grid-template-columns: 15px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #f0ebec;
+}
+
+.preview-check {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  border: 1px solid #cdbdc2;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 9px;
+}
+
+.preview-check.is-done {
+  border-color: #87354f;
+  background: #87354f;
+}
+
+.preview-task-copy {
+  min-width: 0;
+}
+
+.preview-task-copy strong,
+.preview-task-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-task-copy strong {
+  margin-bottom: 3px;
+  color: #41353a;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.preview-task-copy small {
+  color: #95878b;
+  font-size: 8px;
+}
+
+.preview-task-priority {
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 8px;
+}
+
+.preview-task-priority.high { background: #f8e9e8; color: #9b4c48; }
+.preview-task-priority.medium { background: #fbf3e2; color: #92703a; }
+.preview-task-priority.low { background: #f0f1f4; color: #737c8a; }
+
+.preview-add-task {
+  display: inline-block;
+  margin-top: 12px;
+  color: #87354f;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+@media (max-width: 700px) {
+  .landing-page .navbar {
+    min-height: 68px;
+  }
+
+  .landing-page .hero-section {
+    min-height: auto;
+    padding-top: 54px;
+  }
+
+  .landing-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 22px 6%;
+  }
+
+  .landing-planning-showcase {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 48px 6%;
+  }
+
+  .preview-window-body {
+    grid-template-columns: 105px minmax(0, 1fr);
+  }
+
+  .preview-sidebar {
+    padding: 14px 7px;
+  }
+
+  .preview-sidebar-item {
+    gap: 4px;
+    padding: 0 5px;
+    font-size: 8px;
+  }
+
+  .preview-plan-content {
+    padding: 17px 12px;
+  }
+
+  .preview-task-priority {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .preview-window-body {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-sidebar {
+    display: none;
+  }
+
+  .preview-window-bar {
+    padding: 0 10px;
+  }
+
+  .preview-window-label {
+    font-size: 7px;
+  }
+}
+
+/* Editorial VELTO landing treatment */
+.landing-page {
+  --landing-ink: #2b2326;
+  --landing-muted: #756a6e;
+  --landing-line: #e9dfe2;
+  min-height: 100vh;
+  background: #fcfaf9;
+  color: var(--landing-ink);
+}
+
+.landing-page .navbar {
+  width: min(100%, 1380px);
+  min-height: 82px;
+  padding: 15px clamp(22px, 6.2vw, 86px);
+  border-bottom: 1px solid var(--landing-line);
+  background: #fff;
+}
+
+.landing-page .logo {
+  color: var(--primary);
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.landing-page .nav-links {
+  gap: clamp(15px, 2.4vw, 32px);
+}
+
+.landing-page .nav-links a {
+  color: #675c60;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.landing-page .nav-links a:hover,
+.landing-page .login-btn:hover {
+  color: var(--primary);
+}
+
+.landing-page .login-btn,
+.landing-page .signup-btn,
+.landing-page .primary-btn,
+.landing-page .secondary-btn {
+  min-height: 46px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.landing-page .signup-btn,
+.landing-page .primary-btn {
+  background: #87354f;
+  box-shadow: 0 7px 18px rgba(92, 35, 54, 0.13);
+}
+
+.landing-page .signup-btn:hover,
+.landing-page .primary-btn:hover {
+  background: #702a41;
+}
+
+.landing-page .hero-section {
+  width: min(100%, 1380px);
+  min-height: 580px;
+  grid-template-columns: minmax(0, 1.02fr) minmax(380px, 0.98fr);
+  gap: clamp(42px, 7vw, 98px);
+  padding: 64px clamp(22px, 6.2vw, 86px) 70px;
+}
+
+.landing-page .hero-content {
+  max-width: 570px;
+}
+
+.landing-page .eyebrow {
+  margin-bottom: 20px;
+  color: #87354f;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.1px;
+}
+
+.landing-page .hero-content h1 {
+  margin: 0 0 22px;
+  color: #2b2326;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 68px;
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: 0;
+}
+
+.landing-page .hero-content h1 span {
+  color: #87354f;
+  font-style: italic;
+}
+
+.landing-page .hero-text {
+  max-width: 455px;
+  margin-bottom: 30px;
+  color: var(--landing-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.landing-page .hero-buttons {
+  gap: 11px;
+}
+
+.landing-page .landing-secondary-link {
+  border-color: #ded2d5;
+  background: transparent;
+  color: #4f4448;
+}
+
+.landing-page .landing-secondary-link:hover {
+  border-color: #bd8f9c;
+  background: #f8eff2;
+  color: #702a41;
+}
+
+.landing-page .hero-card {
+  width: 100%;
+  max-width: 500px;
+  justify-self: end;
+  padding: 29px 30px 22px;
+  border-color: #e7dfe1;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 22px 56px rgba(70, 21, 38, 0.09);
+  transform: none;
+}
+
+.landing-page .card-header {
+  margin-bottom: 8px;
+  padding-bottom: 17px;
+  border-color: #eee7e8;
+}
+
+.landing-page .card-header p {
+  color: #8b777e;
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+.landing-page .card-header h3 {
+  max-width: 335px;
+  color: #2b2326;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.28;
+}
+
+.landing-page .card-header > span {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  background: #f8edf0;
+  color: #87354f;
+}
+
+.landing-page .task {
+  min-height: 60px;
+  gap: 12px;
+  padding: 13px 0;
+  border-color: #f0e9ea;
+}
+
+.landing-page .task-check {
+  width: 21px;
+  height: 21px;
+  flex-basis: 21px;
+  border-radius: 5px;
+  background: #87354f;
+}
+
+.landing-page .task-check-empty {
+  border: 1px solid #cbbfc2;
+  background: #fff;
+}
+
+.landing-page .task strong {
+  color: #393034;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.landing-page .task small {
+  color: #8a7f83;
+  font-size: 10px;
+}
+
+.landing-page .landing-sample-note {
+  margin-top: 13px;
+  color: #8a7f83;
+  font-size: 9px;
+}
+
+.landing-page .how-section,
+.landing-page .features-section {
+  padding: 82px clamp(22px, 6.2vw, 86px) 88px;
+}
+
+.landing-page .how-section {
+  border-top: 1px solid #eee6e8;
+  border-bottom: 1px solid #eee6e8;
+  background: #fff;
+}
+
+.landing-page .how-section h2,
+.landing-page .features-section h2 {
+  margin-bottom: 38px;
+  color: #2b2326;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.landing-page .steps-grid,
+.landing-page .feature-grid {
+  width: min(100%, 1120px);
+  gap: 0;
+}
+
+.landing-page .step,
+.landing-page .feature {
+  min-height: 200px;
+  padding: 21px 24px 12px;
+  border: 0;
+  border-top: 1px solid #e8dfe1;
+  border-radius: 0;
+  background: transparent;
+}
+
+.landing-page .step + .step,
+.landing-page .feature + .feature {
+  border-left: 1px solid #e8dfe1;
+}
+
+.landing-page .step-number,
+.landing-page .feature-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: #f8edf0;
+  color: #87354f;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.landing-page .step h3,
+.landing-page .feature h3 {
+  color: #342a2e;
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.landing-page .step p,
+.landing-page .feature p {
+  max-width: 300px;
+  color: #756a6e;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.landing-page .features-section {
+  background: #f8f3f4;
+}
+
+.landing-footer {
+  min-height: 90px;
+  padding: 18px clamp(22px, 6.2vw, 86px);
+  border-color: #e8dfe1;
+  background: #fff;
+}
+
+.landing-footer .logo {
+  font-family: "Bodoni MT", Didot, Georgia, serif;
+  font-weight: 600;
+}
+
+.landing-footer p {
+  color: #756a6e;
+  font-size: 11px;
+}
+
+.landing-footer .login-btn {
+  color: #87354f;
+}
+
+@media (max-width: 900px) {
+  .landing-page .hero-section {
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.9fr);
+    gap: 32px;
+  }
+
+  .landing-page .hero-content h1 {
+    font-size: 54px;
+  }
+}
+
+@media (max-width: 700px) {
+  .landing-page .navbar {
+    min-height: 70px;
+  }
+
+  .landing-page .nav-links {
+    gap: 10px;
+  }
+
+  .landing-page .hero-section {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 60px 23px 65px;
+  }
+
+  .landing-page .hero-content h1 {
+    font-size: 48px;
+  }
+
+  .landing-page .hero-card {
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .landing-page .how-section,
+  .landing-page .features-section {
+    padding: 65px 23px;
+  }
+
+  .landing-page .how-section h2,
+  .landing-page .features-section h2 {
+    font-size: 32px;
+  }
+
+  .landing-page .steps-grid,
+  .landing-page .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-page .step,
+  .landing-page .feature {
+    min-height: auto;
+    padding: 20px 0;
+  }
+
+  .landing-page .step + .step,
+  .landing-page .feature + .feature {
+    border-left: 0;
+  }
+
+  .landing-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px 23px;
+  }
+}
