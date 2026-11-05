@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
-function TaskEditor({ task, onClose, onSave }) {
+function TaskEditor({ task, projects, onClose, onSave }) {
   const [title, setTitle] = useState(task?.title ?? '')
   const [dueDate, setDueDate] = useState(task?.dueDate ?? '')
   const [priority, setPriority] = useState(task?.priority ?? 'medium')
+  const [project, setProject] = useState(task?.project ?? '')
 
   const handleSubmit = (event) => {
     event.preventDefault()
     if (!title.trim()) return
-    onSave({ title: title.trim(), dueDate, priority })
+    onSave({ title: title.trim(), dueDate, priority, project })
   }
 
   return (
@@ -44,6 +45,13 @@ function TaskEditor({ task, onClose, onSave }) {
               </select>
             </div>
           </div>
+          <label htmlFor="task-project">Project</label>
+          <select id="task-project" onChange={(event) => setProject(event.target.value)} value={project}>
+            <option value="">No project</option>
+            {projects.filter((item) => !item.completed).map((item) => (
+              <option key={item.id} value={item.id}>{item.title}</option>
+            ))}
+          </select>
           <div className="task-editor-actions">
             <button className="dashboard-button dashboard-button-muted" onClick={onClose} type="button">Cancel</button>
             <button className="dashboard-button dashboard-button-primary" type="submit">{task ? 'Save changes' : 'Add task'}</button>

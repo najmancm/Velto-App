@@ -3,7 +3,18 @@ import './Dashboard.css'
 import AssistantPanel from '../../features/assistant/AssistantPanel.jsx'
 import VeltoLogo from '../brand/VeltoLogo.jsx'
 import TaskEditor from './TaskEditor.jsx'
+import WorkspaceEditor from './WorkspaceEditor.jsx'
 import { createTask, createTasks, deleteTask as deleteTaskRequest, listTasks, updateTask } from '../../services/taskService.js'
+import {
+  createGoal,
+  createProject,
+  deleteGoal,
+  deleteProject,
+  listGoals,
+  listProjects,
+  updateGoal,
+  updateProject,
+} from '../../services/workspaceService.js'
 
 const taskFilters = ['Inbox', 'Today', 'Upcoming', 'All tasks', 'Completed']
 
@@ -24,10 +35,15 @@ function formatDueDate(dueDate, today) {
 
 function Dashboard({ onSignOut, userName }) {
   const [tasks, setTasks] = useState([])
+  const [goals, setGoals] = useState([])
+  const [projects, setProjects] = useState([])
   const [activeFilter, setActiveFilter] = useState('Inbox')
+  const [activeWorkspace, setActiveWorkspace] = useState('tasks')
+  const [selectedProjectId, setSelectedProjectId] = useState('')
   const [search, setSearch] = useState('')
   const [quickTask, setQuickTask] = useState('')
   const [editingTask, setEditingTask] = useState(undefined)
+  const [workspaceEditor, setWorkspaceEditor] = useState(undefined)
   const [assistantOpen, setAssistantOpen] = useState(false)
   const [tasksLoading, setTasksLoading] = useState(true)
   const [taskError, setTaskError] = useState('')
@@ -46,9 +62,13 @@ function Dashboard({ onSignOut, userName }) {
 
   useEffect(() => {
     let isActive = true
-    listTasks()
-      .then((savedTasks) => {
-        if (isActive) setTasks(savedTasks)
+    Promise.all([listTasks(), listGoals(), listProjects()])
+      .then(([savedTasks, savedGoals, savedProjects]) => {
+        if (isActive) {
+          setTasks(savedTasks)
+          setGoals(savedGoals)
+          setProjects(savedProjects)
+        }
       })
       .catch((error) => {
         if (isActive) setTaskError(error.message)
@@ -135,8 +155,69 @@ function Dashboard({ onSignOut, userName }) {
     }
   }
 
+  const saveWorkspaceResource = async (details) => {
+    const { type, item } = workspaceEditor
+    try {
+      if (type === 'goal') {
+        const savedGoal = item
+          ? await updateGoal(item.id, details)
+          : await createGoal(details)
+        setGoals((currentGoals) => item
+          ? currentGoals.map((goal) => goal.id === savedGoal.id ? savedGoal : goal)
+          : [savedGoal, ...currentGoals])
+      } else {
+        const savedProject = item
+          ? await updateProject(item.id, details)
+          : await createProject(details)
+        setProjects((currentProjects) => item
+          ? currentProjects.map((project) => project.id === savedProject.id ? savedProject : project)
+          : [savedProject, ...currentProjects])
+      }
+      setWorkspaceEditor(undefined)
+      setTaskError('')
+      setNotice(`${type === 'goal' ? 'Goal' : 'Project'} ${item ? 'updated' : 'created'}.`)
+    } catch (error) {
+      setTaskError(error.message)
+    }
+  }
+
+  const toggleWorkspaceResource = async (type, item) => {
+    const update = type === 'goal' ? updateGoal : updateProject
+    const setItems = type === 'goal' ? setGoals : setProjects
+    try {
+      const savedItem = await update(item.id, { ...item, completed: !item.completed })
+      setItems((items) => items.map((currentItem) => currentItem.id === savedItem.id ? savedItem : currentItem))
+      setNotice(`${type === 'goal' ? 'Goal' : 'Project'} ${savedItem.completed ? 'completed' : 'reopened'}.`)
+    } catch (error) {
+      setTaskError(error.message)
+    }
+  }
+
+  const removeWorkspaceResource = async (type, item) => {
+    const remove = type === 'goal' ? deleteGoal : deleteProject
+    const setItems = type === 'goal' ? setGoals : setProjects
+    const label = type === 'goal' ? 'goal' : 'project'
+    if (!window.confirm(`Delete “${item.title}”? ${type === 'project' ? 'Its tasks will remain in your workspace.' : 'Projects linked to it will remain, without a goal.'}`)) return
+    try {
+      await remove(item.id)
+      setItems((items) => items.filter((currentItem) => currentItem.id !== item.id))
+      if (type === 'goal') {
+        setProjects((currentProjects) => currentProjects.map((project) => project.goal === item.id ? { ...project, goal: '' } : project))
+      }
+      if (type === 'project') {
+        setTasks((currentTasks) => currentTasks.map((task) => task.project === item.id ? { ...task, project: '' } : task))
+        if (selectedProjectId === item.id) setSelectedProjectId('')
+      }
+      setNotice(`${label[0].toUpperCase()}${label.slice(1)} deleted.`)
+      setTaskError('')
+    } catch (error) {
+      setTaskError(error.message)
+    }
+  }
+
   const visibleTasks = tasks
     .filter((task) => {
+      if (selectedProjectId && task.project !== selectedProjectId) return false
       if (activeFilter === 'Inbox') return !task.completed && !task.dueDate
       if (activeFilter === 'Today') return task.dueDate && task.dueDate <= today && !task.completed
       if (activeFilter === 'Upcoming') return task.dueDate > today && !task.completed
@@ -161,32 +242,34 @@ function Dashboard({ onSignOut, userName }) {
   const highPriorityCount = tasks.filter((task) => !task.completed && task.priority === 'high').length
   const mediumPriorityCount = tasks.filter((task) => !task.completed && task.priority === 'medium').length
   const lowPriorityCount = tasks.filter((task) => !task.completed && task.priority === 'low').length
-  const viewTitle = activeFilter === 'All tasks' ? 'All tasks' : activeFilter
+  const viewTitle = activeWorkspace === 'tasks'
+    ? (activeFilter === 'All tasks' ? 'All tasks' : activeFilter)
+    : activeWorkspace
   const sidebarGroups = [
     {
       label: 'TASKS',
       items: [
-        { name: 'Inbox', icon: '▱', filter: 'Inbox', count: inboxCount },
-        { name: 'Today', icon: '◷', filter: 'Today', count: todayCount },
-        { name: 'Upcoming', icon: '▦', filter: 'Upcoming', count: upcomingCount },
-        { name: 'All tasks', icon: '☷', filter: 'All tasks', count: tasks.length },
-        { name: 'Completed', icon: '✓', filter: 'Completed', count: completedCount },
+        { name: 'Inbox', icon: '▱', filter: 'Inbox', workspace: 'tasks', count: inboxCount },
+        { name: 'Today', icon: '◷', filter: 'Today', workspace: 'tasks', count: todayCount },
+        { name: 'Upcoming', icon: '▦', filter: 'Upcoming', workspace: 'tasks', count: upcomingCount },
+        { name: 'All tasks', icon: '☷', filter: 'All tasks', workspace: 'tasks', count: tasks.length },
+        { name: 'Completed', icon: '✓', filter: 'Completed', workspace: 'tasks', count: completedCount },
       ],
     },
     {
       label: 'PRIORITY',
       items: [
-        { name: 'High priority', icon: '↑', filter: 'High priority', count: highPriorityCount },
-        { name: 'Medium priority', icon: '→', filter: 'Medium priority', count: mediumPriorityCount },
-        { name: 'Low priority', icon: '↓', filter: 'Low priority', count: lowPriorityCount },
+        { name: 'High priority', icon: '↑', filter: 'High priority', workspace: 'tasks', count: highPriorityCount },
+        { name: 'Medium priority', icon: '→', filter: 'Medium priority', workspace: 'tasks', count: mediumPriorityCount },
+        { name: 'Low priority', icon: '↓', filter: 'Low priority', workspace: 'tasks', count: lowPriorityCount },
       ],
     },
     {
       label: 'WORKSPACE',
       items: [
         { name: 'Assistant', icon: '✦', action: 'assistant' },
-        { name: 'Goals', icon: '◎', comingSoon: true },
-        { name: 'Projects', icon: '▧', comingSoon: true },
+        { name: 'Goals', icon: '◎', workspace: 'Goals', count: goals.length },
+        { name: 'Projects', icon: '▧', workspace: 'Projects', count: projects.length },
         { name: 'Calendar', icon: '□', comingSoon: true },
       ],
     },
@@ -206,7 +289,9 @@ function Dashboard({ onSignOut, userName }) {
               {group.items.map((item) => {
                 const isSelected = item.action === 'assistant'
                   ? assistantOpen
-                  : !assistantOpen && activeFilter === item.filter
+                  : item.workspace === 'tasks'
+                    ? !assistantOpen && activeWorkspace === 'tasks' && activeFilter === item.filter && !selectedProjectId
+                    : !assistantOpen && activeWorkspace === item.workspace
 
                 return (
                   <button
@@ -218,7 +303,13 @@ function Dashboard({ onSignOut, userName }) {
                       if (item.action === 'assistant') openAssistant()
                       else if (!item.comingSoon) {
                         setAssistantOpen(false)
-                        setActiveFilter(item.filter)
+                        if (item.workspace === 'tasks') {
+                          setActiveWorkspace('tasks')
+                          setActiveFilter(item.filter)
+                          setSelectedProjectId('')
+                        } else {
+                          setActiveWorkspace(item.workspace)
+                        }
                       }
                     }}
                     title={item.comingSoon ? `${item.name} is coming soon` : undefined}
@@ -255,17 +346,28 @@ function Dashboard({ onSignOut, userName }) {
               <p className="dashboard-subtitle">Your tasks, saved to your VELTO account.</p>
             </div>
             <div className="dashboard-heading-actions">
-              <button className="dashboard-button dashboard-button-muted" onClick={openAssistant} type="button">Ask assistant</button>
-              <button className="dashboard-button dashboard-button-primary" onClick={() => setEditingTask(null)} type="button"><span aria-hidden="true">+</span> New task</button>
+              {activeWorkspace === 'tasks' ? (
+                <>
+                  <button className="dashboard-button dashboard-button-muted" onClick={openAssistant} type="button">Ask assistant</button>
+                  <button className="dashboard-button dashboard-button-primary" onClick={() => setEditingTask(null)} type="button"><span aria-hidden="true">+</span> New task</button>
+                </>
+              ) : (
+                <button className="dashboard-button dashboard-button-primary" onClick={() => setWorkspaceEditor({ type: activeWorkspace === 'Goals' ? 'goal' : 'project', item: null })} type="button">
+                  <span aria-hidden="true">+</span> New {activeWorkspace === 'Goals' ? 'goal' : 'project'}
+                </button>
+              )}
             </div>
           </section>
 
-          <div className={`dashboard-work-grid ${assistantOpen ? 'is-assistant-open' : ''}`}>
+          {activeWorkspace === 'tasks' ? <div className={`dashboard-work-grid ${assistantOpen ? 'is-assistant-open' : ''}`}>
             <section className="task-board" aria-labelledby="task-board-title">
               <div className="task-board-heading">
                 <div>
                   <h2 id="task-board-title">{viewTitle}</h2>
-                  <p className="task-board-count">{visibleTasks.length} task{visibleTasks.length === 1 ? '' : 's'}</p>
+                  <p className="task-board-count">
+                    {selectedProjectId ? `${projects.find((project) => project.id === selectedProjectId)?.title ?? 'Project'} · ` : ''}
+                    {visibleTasks.length} task{visibleTasks.length === 1 ? '' : 's'}
+                  </p>
                 </div>
                 <label className="task-search">
                   <span className="sr-only">Search tasks</span>
@@ -317,6 +419,7 @@ function Dashboard({ onSignOut, userName }) {
                       />
                       <button className="dashboard-task-title" onClick={() => setEditingTask(task)} type="button">{task.title}</button>
                       <span className="task-due-date">{formatDueDate(task.dueDate, today)}</span>
+                      <span className="task-project-label">{projects.find((project) => project.id === task.project)?.title}</span>
                       <span className={`task-priority priority-${task.priority}`}>{task.priority}</span>
                       <div className="task-actions">
                         <button aria-label={`Edit ${task.title}`} onClick={() => setEditingTask(task)} type="button">Edit</button>
@@ -341,7 +444,83 @@ function Dashboard({ onSignOut, userName }) {
               onClose={() => setAssistantOpen(false)}
               panelRef={assistantPanel}
             />
-          </div>
+          </div> : (
+            <section className="workspace-resource-list" aria-label={`${activeWorkspace} list`}>
+              {tasksLoading ? (
+                <div className="task-empty-state" role="status"><p>Loading your workspace...</p></div>
+              ) : activeWorkspace === 'Goals' ? (
+                goals.length ? goals.map((goal) => {
+                  const relatedProjects = projects.filter((project) => project.goal === goal.id)
+                  const relatedTasks = tasks.filter((task) => relatedProjects.some((project) => project.id === task.project))
+                  const completedTasks = relatedTasks.filter((task) => task.completed).length
+                  const projectNames = relatedProjects.map((project) => project.title)
+                  return (
+                    <article className={`workspace-resource ${goal.completed ? 'is-completed' : ''}`} key={goal.id}>
+                      <label className="workspace-complete-toggle">
+                        <input checked={goal.completed} onChange={() => toggleWorkspaceResource('goal', goal)} type="checkbox" />
+                        <span className="sr-only">Mark {goal.title} {goal.completed ? 'active' : 'complete'}</span>
+                      </label>
+                      <div className="workspace-resource-copy">
+                        <h2>{goal.title}</h2>
+                        <p>{goal.description || 'No description yet.'}</p>
+                        <small>
+                          {goal.targetDate ? `Target ${formatDueDate(goal.targetDate, today)}` : 'No target date'}
+                          {' · '}{relatedProjects.length} project{relatedProjects.length === 1 ? '' : 's'}
+                          {' · '}{completedTasks}/{relatedTasks.length} tasks complete
+                        </small>
+                        {projectNames.length > 0 && <span className="workspace-related-label">{projectNames.join(' · ')}</span>}
+                      </div>
+                      <div className="workspace-resource-actions">
+                        <button onClick={() => setWorkspaceEditor({ type: 'goal', item: goal })} type="button">Edit</button>
+                        <button onClick={() => removeWorkspaceResource('goal', goal)} type="button">Delete</button>
+                      </div>
+                    </article>
+                  )
+                }) : (
+                  <div className="task-empty-state">
+                    <h3>No goals yet</h3>
+                    <p>Add a goal to give your projects a clear destination.</p>
+                    <button className="dashboard-button dashboard-button-primary" onClick={() => setWorkspaceEditor({ type: 'goal', item: null })} type="button">Create a goal</button>
+                  </div>
+                )
+              ) : projects.length ? projects.map((project) => {
+                const projectTasks = tasks.filter((task) => task.project === project.id)
+                const doneTasks = projectTasks.filter((task) => task.completed).length
+                const linkedGoal = goals.find((goal) => goal.id === project.goal)
+                return (
+                  <article className={`workspace-resource ${project.completed ? 'is-completed' : ''}`} key={project.id}>
+                    <label className="workspace-complete-toggle">
+                      <input checked={project.completed} onChange={() => toggleWorkspaceResource('project', project)} type="checkbox" />
+                      <span className="sr-only">Mark {project.title} {project.completed ? 'active' : 'complete'}</span>
+                    </label>
+                    <div className="workspace-resource-copy">
+                      <h2>{project.title}</h2>
+                      <p>{project.description || 'No description yet.'}</p>
+                      <small>{linkedGoal ? `Goal: ${linkedGoal.title} · ` : ''}{doneTasks}/{projectTasks.length} tasks complete</small>
+                      <div className="workspace-progress" role="progressbar" aria-label={`${project.title} task progress`} aria-valuenow={projectTasks.length ? Math.round(doneTasks / projectTasks.length * 100) : 0} aria-valuemin="0" aria-valuemax="100">
+                        <span style={{ width: `${projectTasks.length ? Math.round(doneTasks / projectTasks.length * 100) : 0}%` }} />
+                      </div>
+                    </div>
+                    <div className="workspace-resource-actions">
+                      <button onClick={() => {
+                        setActiveWorkspace('tasks')
+                        setSelectedProjectId(project.id)
+                        setActiveFilter('All tasks')
+                      }} type="button">View tasks</button>
+                      <button onClick={() => setWorkspaceEditor({ type: 'project', item: project })} type="button">Edit</button>
+                      <button onClick={() => removeWorkspaceResource('project', project)} type="button">Delete</button>
+                    </div>
+                  </article>
+                )
+              }) : (
+                <div className="task-empty-state">
+                  <h3>No projects yet</h3>
+                  <p>Create a project to collect related tasks in one place.</p>
+                  <button className="dashboard-button dashboard-button-primary" onClick={() => setWorkspaceEditor({ type: 'project', item: null })} type="button">Create a project</button>
+                </div>
+              )}
+            </section>
+          )}
           {notice && <p className="dashboard-toast" role="status">{notice}</p>}
           {taskError && <p className="dashboard-storage-warning" role="alert">{taskError}</p>}
         </div>
@@ -352,7 +531,17 @@ function Dashboard({ onSignOut, userName }) {
           key={editingTask?.id ?? 'new-task'}
           onClose={() => setEditingTask(undefined)}
           onSave={saveTask}
+          projects={projects}
           task={editingTask}
+        />
+      )}
+      {workspaceEditor && (
+        <WorkspaceEditor
+          goals={goals}
+          item={workspaceEditor.item}
+          onClose={() => setWorkspaceEditor(undefined)}
+          onSave={saveWorkspaceResource}
+          type={workspaceEditor.type}
         />
       )}
     </div>
