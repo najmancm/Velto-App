@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-function TaskEditor({ task, projects, onClose, onSave }) {
+function TaskEditor({ task, projects, defaultDueDate, onClose, onSave }) {
   const [title, setTitle] = useState(task?.title ?? '')
-  const [dueDate, setDueDate] = useState(task?.dueDate ?? '')
+  const [dueDate, setDueDate] = useState(task?.dueDate ?? defaultDueDate)
   const [priority, setPriority] = useState(task?.priority ?? 'medium')
   const [project, setProject] = useState(task?.project ?? '')
 

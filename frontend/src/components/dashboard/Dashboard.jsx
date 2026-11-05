@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './Dashboard.css'
 import AssistantPanel from '../../features/assistant/AssistantPanel.jsx'
 import VeltoLogo from '../brand/VeltoLogo.jsx'
+import CalendarView from './CalendarView.jsx'
 import TaskEditor from './TaskEditor.jsx'
 import WorkspaceEditor from './WorkspaceEditor.jsx'
 import { createTask, createTasks, deleteTask as deleteTaskRequest, listTasks, updateTask } from '../../services/taskService.js'
@@ -40,6 +41,8 @@ function Dashboard({ onSignOut, userName }) {
   const [activeFilter, setActiveFilter] = useState('Inbox')
   const [activeWorkspace, setActiveWorkspace] = useState('tasks')
   const [selectedProjectId, setSelectedProjectId] = useState('')
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState(getToday)
+  const [defaultTaskDueDate, setDefaultTaskDueDate] = useState('')
   const [search, setSearch] = useState('')
   const [quickTask, setQuickTask] = useState('')
   const [editingTask, setEditingTask] = useState(undefined)
@@ -270,7 +273,7 @@ function Dashboard({ onSignOut, userName }) {
         { name: 'Assistant', icon: '✦', action: 'assistant' },
         { name: 'Goals', icon: '◎', workspace: 'Goals', count: goals.length },
         { name: 'Projects', icon: '▧', workspace: 'Projects', count: projects.length },
-        { name: 'Calendar', icon: '□', comingSoon: true },
+        { name: 'Calendar', icon: '□', workspace: 'Calendar' },
       ],
     },
   ]
@@ -341,15 +344,18 @@ function Dashboard({ onSignOut, userName }) {
         <div className="dashboard-content">
           <section className="dashboard-heading-row">
             <div>
-              <p className="dashboard-kicker">YOUR TASKS</p>
+              <p className="dashboard-kicker">{activeWorkspace === 'Calendar' ? 'YOUR SCHEDULE' : 'YOUR TASKS'}</p>
               <h1>{viewTitle}</h1>
-              <p className="dashboard-subtitle">Your tasks, saved to your VELTO account.</p>
+              <p className="dashboard-subtitle">{activeWorkspace === 'Calendar' ? 'Plan and adjust tasks by due date.' : 'Your tasks, saved to your VELTO account.'}</p>
             </div>
             <div className="dashboard-heading-actions">
-              {activeWorkspace === 'tasks' ? (
+              {activeWorkspace === 'tasks' || activeWorkspace === 'Calendar' ? (
                 <>
-                  <button className="dashboard-button dashboard-button-muted" onClick={openAssistant} type="button">Ask assistant</button>
-                  <button className="dashboard-button dashboard-button-primary" onClick={() => setEditingTask(null)} type="button"><span aria-hidden="true">+</span> New task</button>
+                  {activeWorkspace === 'tasks' && <button className="dashboard-button dashboard-button-muted" onClick={openAssistant} type="button">Ask assistant</button>}
+                  <button className="dashboard-button dashboard-button-primary" onClick={() => {
+                    setDefaultTaskDueDate(activeWorkspace === 'Calendar' ? selectedCalendarDate : '')
+                    setEditingTask(null)
+                  }} type="button"><span aria-hidden="true">+</span> New task</button>
                 </>
               ) : (
                 <button className="dashboard-button dashboard-button-primary" onClick={() => setWorkspaceEditor({ type: activeWorkspace === 'Goals' ? 'goal' : 'project', item: null })} type="button">
@@ -359,7 +365,23 @@ function Dashboard({ onSignOut, userName }) {
             </div>
           </section>
 
-          {activeWorkspace === 'tasks' ? <div className={`dashboard-work-grid ${assistantOpen ? 'is-assistant-open' : ''}`}>
+          {activeWorkspace === 'Calendar' ? (
+            tasksLoading ? (
+              <div className="task-empty-state" role="status"><p>Loading your calendar...</p></div>
+            ) : (
+              <CalendarView
+                onCreateTask={(date) => {
+                  setDefaultTaskDueDate(date)
+                  setEditingTask(null)
+                }}
+                onEditTask={(task) => setEditingTask(task)}
+                onSelectDate={setSelectedCalendarDate}
+                selectedDate={selectedCalendarDate}
+                tasks={tasks}
+                today={today}
+              />
+            )
+          ) : activeWorkspace === 'tasks' ? <div className={`dashboard-work-grid ${assistantOpen ? 'is-assistant-open' : ''}`}>
             <section className="task-board" aria-labelledby="task-board-title">
               <div className="task-board-heading">
                 <div>
@@ -531,6 +553,7 @@ function Dashboard({ onSignOut, userName }) {
           key={editingTask?.id ?? 'new-task'}
           onClose={() => setEditingTask(undefined)}
           onSave={saveTask}
+          defaultDueDate={defaultTaskDueDate}
           projects={projects}
           task={editingTask}
         />
