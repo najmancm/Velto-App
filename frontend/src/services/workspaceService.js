@@ -16,13 +16,21 @@ function normalizeProject(project) {
   }
 }
 
-function toApiResource(resource) {
+function toApiGoal(goal) {
   return {
-    title: resource.title,
-    description: resource.description,
-    goal: resource.goal || null,
-    target_date: resource.targetDate || null,
-    completed: resource.completed,
+    title: goal.title,
+    description: goal.description,
+    target_date: goal.targetDate || null,
+    completed: goal.completed,
+  }
+}
+
+function toApiProject(project) {
+  return {
+    title: project.title,
+    description: project.description,
+    goal: project.goal || null,
+    completed: project.completed,
   }
 }
 
@@ -33,14 +41,14 @@ export async function listGoals() {
 export async function createGoal(goal) {
   return normalizeGoal(await apiRequest('/goals/', {
     method: 'POST',
-    body: JSON.stringify(toApiResource(goal)),
+    body: JSON.stringify(toApiGoal(goal)),
   }))
 }
 
 export async function updateGoal(id, goal) {
   return normalizeGoal(await apiRequest(`/goals/${id}/`, {
     method: 'PATCH',
-    body: JSON.stringify(toApiResource(goal)),
+    body: JSON.stringify(toApiGoal(goal)),
   }))
 }
 
@@ -55,14 +63,14 @@ export async function listProjects() {
 export async function createProject(project) {
   return normalizeProject(await apiRequest('/projects/', {
     method: 'POST',
-    body: JSON.stringify(toApiResource(project)),
+    body: JSON.stringify(toApiProject(project)),
   }))
 }
 
 export async function updateProject(id, project) {
   return normalizeProject(await apiRequest(`/projects/${id}/`, {
     method: 'PATCH',
-    body: JSON.stringify(toApiResource(project)),
+    body: JSON.stringify(toApiProject(project)),
   }))
 }
 
