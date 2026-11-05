@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import Q
 from rest_framework import serializers
 
-from .models import Task
+from .models import Goal, Project, Task
 
 User = get_user_model()
 
@@ -52,7 +52,33 @@ class LoginSerializer(serializers.Serializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    def validate_project(self, project):
+        request = self.context.get('request')
+        if project and request and project.owner_id != request.user.id:
+            raise serializers.ValidationError('Choose a project from your workspace.')
+        return project
+
     class Meta:
         model = Task
-        fields = ['id', 'title', 'due_date', 'priority', 'completed', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'project', 'due_date', 'priority', 'completed', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class GoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['id', 'title', 'description', 'target_date', 'completed', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    def validate_goal(self, goal):
+        request = self.context.get('request')
+        if goal and request and goal.owner_id != request.user.id:
+            raise serializers.ValidationError('Choose a goal from your workspace.')
+        return goal
+
+    class Meta:
+        model = Project
+        fields = ['id', 'title', 'description', 'goal', 'completed', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']

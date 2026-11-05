@@ -85,6 +85,47 @@ class PlannerApiTests(APITestCase):
         other_owner_response = second_client.get(reverse('task-detail', args=[created.data['id']]))
         self.assertEqual(other_owner_response.status_code, 404)
 
+    def test_projects_and_goals_are_only_visible_to_their_owner(self):
+        first_user = self.create_user()
+        first_client = APIClient()
+        first_client.force_authenticate(first_user)
+        goal = first_client.post(reverse('goal-list-create'), {'title': 'Learn Django'}, format='json')
+        self.assertEqual(goal.status_code, 201)
+        project = first_client.post(reverse('project-list-create'), {
+            'title': 'Build planner API',
+            'goal': goal.data['id'],
+        }, format='json')
+        self.assertEqual(project.status_code, 201)
+
+        second_user = self.create_user('another@example.com')
+        second_client = APIClient()
+        second_client.force_authenticate(second_user)
+        self.assertEqual(second_client.get(reverse('goal-list-create')).data, [])
+        self.assertEqual(second_client.get(reverse('project-list-create')).data, [])
+        self.assertEqual(second_client.get(reverse('goal-detail', args=[goal.data['id']])).status_code, 404)
+        self.assertEqual(second_client.get(reverse('project-detail', args=[project.data['id']])).status_code, 404)
+
+    def test_projects_and_tasks_reject_another_users_parent_resource(self):
+        first_user = self.create_user()
+        first_client = APIClient()
+        first_client.force_authenticate(first_user)
+        goal = first_client.post(reverse('goal-list-create'), {'title': 'Learn Django'}, format='json')
+
+        second_user = self.create_user('another@example.com')
+        second_client = APIClient()
+        second_client.force_authenticate(second_user)
+        project = second_client.post(reverse('project-list-create'), {
+            'title': 'Foreign goal project',
+            'goal': goal.data['id'],
+        }, format='json')
+        task = second_client.post(reverse('task-list-create'), {
+            'title': 'Foreign project task',
+            'project': 1,
+        }, format='json')
+
+        self.assertEqual(project.status_code, 400)
+        self.assertEqual(task.status_code, 400)
+
     def test_bulk_create_is_validated_and_user_scoped(self):
         user = self.create_user()
         self.client.force_authenticate(user)

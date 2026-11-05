@@ -16,8 +16,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Task
-from .serializers import LoginSerializer, RegisterSerializer, TaskSerializer, UserSerializer
+from .models import Goal, Project, Task
+from .serializers import GoalSerializer, LoginSerializer, ProjectSerializer, RegisterSerializer, TaskSerializer, UserSerializer
 from .task_parser import parse_task_list
 
 logger = logging.getLogger(__name__)
@@ -104,12 +104,50 @@ class TaskBulkCreateView(APIView):
         if not isinstance(task_data, list) or not 1 <= len(task_data) <= 50:
             return Response({'tasks': ['Provide between 1 and 50 tasks.']}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = TaskSerializer(data=task_data, many=True)
+        serializer = TaskSerializer(data=task_data, many=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             tasks = [Task(owner=request.user, **item) for item in serializer.validated_data]
             created_tasks = Task.objects.bulk_create(tasks)
         return Response(TaskSerializer(created_tasks, many=True).data, status=status.HTTP_201_CREATED)
+
+
+class GoalListCreateView(generics.ListCreateAPIView):
+    serializer_class = GoalSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Goal.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class GoalDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = GoalSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Goal.objects.filter(owner=self.request.user)
+
+
+class ProjectListCreateView(generics.ListCreateAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user)
 
 
 class AssistantView(APIView):
